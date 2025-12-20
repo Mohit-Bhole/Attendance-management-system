@@ -105,7 +105,12 @@ attendance-system/
     ├── login.html       # Login page
     └── ... (other templates)
 ```
+---
 
+**BUILT BY - MOHIT BHOLE**
+
+---
 ## License
 
 This project is created as a capstone project for educational purposes. 
+
