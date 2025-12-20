@@ -40,7 +40,7 @@ A web-based attendance system developed as a final year capstone project to digi
 ### Installation
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/attendance-management-system.git
+   git clone https://github.com/Mohit-Bhole/Attendance-management-system.git
    cd attendance-management-system
    ```
 
@@ -107,4 +107,5 @@ attendance-system/
 ```
 
 ## License
+
 This project is created as a capstone project for educational purposes. 
