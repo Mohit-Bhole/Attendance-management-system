@@ -24,6 +24,16 @@ A web-based attendance system developed as a final year capstone project to digi
 - Attendance status visualization
 - Export reports to CSV
 
+## Screenshots
+![Home-page](https://github.com/Mohit-Bhole/Attendance-management-system/blob/e731e0fe77c9c9678f61b879ce934bf16110a924/Screenshot%202025-12-20%20173404.png)
+![Login-page](https://github.com/Mohit-Bhole/Attendance-management-system/blob/e731e0fe77c9c9678f61b879ce934bf16110a924/Screenshot%202025-12-20%20173457.png)
+![Admin-dashboard](https://github.com/Mohit-Bhole/Attendance-management-system/blob/e731e0fe77c9c9678f61b879ce934bf16110a924/Screenshot%202025-12-20%20173515.png)
+![Managing-Students](https://github.com/Mohit-Bhole/Attendance-management-system/blob/e731e0fe77c9c9678f61b879ce934bf16110a924/Screenshot%202025-12-20%20173525.png)
+![Managing-Teachers](https://github.com/Mohit-Bhole/Attendance-management-system/blob/e731e0fe77c9c9678f61b879ce934bf16110a924/Screenshot%202025-12-20%20173534.png)
+![Attendance-Reports](https://github.com/Mohit-Bhole/Attendance-management-system/blob/e731e0fe77c9c9678f61b879ce934bf16110a924/Screenshot%202025-12-20%20173543.png)
+![Student-Dashboard](https://github.com/Mohit-Bhole/Attendance-management-system/blob/e731e0fe77c9c9678f61b879ce934bf16110a924/Screenshot%202025-12-20%20173700.png)
+![Attendance-History](https://github.com/Mohit-Bhole/Attendance-management-system/blob/e731e0fe77c9c9678f61b879ce934bf16110a924/Screenshot%202025-12-20%20173706.png)
+
 ## Tech Stack
 - Backend: Python with Flask framework
 - Database: SQLite
@@ -113,4 +123,5 @@ attendance-system/
 ## License
 
 This project is created as a capstone project for educational purposes. 
+
 
