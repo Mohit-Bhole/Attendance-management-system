@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance Reports - Smart Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Attendance Reports</h1>
+        <p class="lead">View and analyze student attendance records</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Filter Form -->
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Filter Options</h4>
+            </div>
+            <div class="card-body">
+                <form method="get" id="filterForm">
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">Select Student</label>
+                        <select class="form-select" id="student_id" name="student_id">
+                            <option value="">-- All Students --</option>
+                            {% for student in students %}
+                            <option value="{{ student.id }}" {% if request.args.get('student_id')|int == student.id %}selected{% endif %}>
+                                {{ student.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="date_from" class="form-label">From Date</label>
+                        <input type="date" class="form-control" id="date_from" name="date_from" 
+                               value="{{ request.args.get('date_from', '') }}">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="date_to" class="form-label">To Date</label>
+                        <input type="date" class="form-control" id="date_to" name="date_to"
+                               value="{{ request.args.get('date_to', '') }}">
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Apply Filters
+                        </button>
+                        <a href="{{ url_for('admin_reports') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Reset Filters
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Export Options -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Export Options</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-success" onclick="exportToCSV()">
+                        <i class="bi bi-file-earmark-spreadsheet"></i> Export to CSV
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="printReport()">
+                        <i class="bi bi-printer"></i> Print Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Table -->
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Attendance Data</h4>
+                {% if attendance_data %}
+                <span class="badge bg-light text-dark">Results: {{ attendance_data|length }}</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if attendance_data %}
+                <div class="table-responsive" id="report-table">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Student</th>
+                                <th>Subject</th>
+                                <th>Teacher</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in attendance_data %}
+                            <tr>
+                                <td>{{ record.date }}</td>
+                                <td>{{ record.student_name }}</td>
+                                <td>{{ record.subject }}</td>
+                                <td>{{ record.teacher_name }}</td>
+                                <td>
+                                    {% if record.status == 'present' %}
+                                    <span class="badge bg-success">Present</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Absent</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if record.notes %}
+                                    <span class="text-muted">{{ record.notes }}</span>
+                                    {% else %}
+                                    <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% elif request.args.get('student_id') %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> No attendance records found for the selected criteria.
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> Select a student from the filter options to view attendance records.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Attendance Summary -->
+        {% if attendance_data %}
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Attendance Summary</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% set present_count = attendance_data|selectattr('status', 'equalto', 'present')|list|length %}
+                    {% set absent_count = attendance_data|selectattr('status', 'equalto', 'absent')|list|length %}
+                    {% set total_count = attendance_data|length %}
+                    {% set present_percentage = (present_count / total_count * 100)|round(2) if total_count > 0 else 0 %}
+                    
+                    <div class="col-md-6">
+                        <div class="card border-success mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Present</h5>
+                                <h2 class="card-text text-success">{{ present_count }}</h2>
+                                <p class="card-text">{{ present_percentage }}% of total</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card border-danger mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Absent</h5>
+                                <h2 class="card-text text-danger">{{ absent_count }}</h2>
+                                <p class="card-text">{{ (100 - present_percentage)|round(2) }}% of total</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12">
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ present_percentage }}%;" 
+                                 aria-valuenow="{{ present_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ present_percentage }}%
+                            </div>
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ 100 - present_percentage }}%;" 
+                                 aria-valuenow="{{ 100 - present_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ (100 - present_percentage)|round(2) }}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function exportToCSV() {
+        // In a real application, this would connect to a proper CSV export endpoint
+        alert('CSV export functionality would be implemented in a production environment. This is a demo feature.');
+    }
+    
+    function printReport() {
+        window.print();
+    }
+</script>
+{% endblock %} 

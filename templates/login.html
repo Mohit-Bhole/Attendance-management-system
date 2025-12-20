@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Smart Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Login</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Select Role</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="">-- Select Role --</option>
+                            <option value="admin" {% if request.args.get('role') == 'admin' %}selected{% endif %}>Admin</option>
+                            <option value="teacher" {% if request.args.get('role') == 'teacher' %}selected{% endif %}>Teacher</option>
+                            <option value="student" {% if request.args.get('role') == 'student' %}selected{% endif %}>Student</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+                
+                <div class="mt-4">
+                    <h5>Demo Credentials:</h5>
+                    <div class="accordion" id="credentialsAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="adminHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#adminCredentials">
+                                    Admin
+                                </button>
+                            </h2>
+                            <div id="adminCredentials" class="accordion-collapse collapse" data-bs-parent="#credentialsAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>Username:</strong> MeghaShinde</p>
+                                    <p><strong>Password:</strong> admin123</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="teacherHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#teacherCredentials">
+                                    Teacher
+                                </button>
+                            </h2>
+                            <div id="teacherCredentials" class="accordion-collapse collapse" data-bs-parent="#credentialsAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>Network & Info Security</strong><br>Username: saloni<br>Password: teach123</p>
+                                    <p><strong>Class Teacher</strong><br>Username: ashwini<br>Password: teach456</p>
+                                    <p><strong>Mobile App Dev</strong><br>Username: jyoti<br>Password: teach789</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="studentHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#studentCredentials">
+                                    Student
+                                </button>
+                            </h2>
+                            <div id="studentCredentials" class="accordion-collapse collapse" data-bs-parent="#credentialsAccordion">
+                                <div class="accordion-body">
+                                    <p><strong>Vikas Gaikwad</strong><br>Username: vikas<br>Password: stud123</p>
+                                    <p><strong>Vedant Shivade</strong><br>Username: vedant<br>Password: stud456</p>
+                                    <p><strong>Rushad Adikane</strong><br>Username: rushad<br>Password: stud789</p>
+                                    <p><strong>Divesh More</strong><br>Username: divesh<br>Password: stud101</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

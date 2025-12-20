@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Smart Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Admin Dashboard</h1>
+        <p class="lead">Welcome, {{ session.name }} (HOD)</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="btn-group">
+            <a href="{{ url_for('manage_students') }}" class="btn btn-outline-primary">Manage Students</a>
+            <a href="{{ url_for('manage_teachers') }}" class="btn btn-outline-primary">Manage Teachers</a>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center h-100 shadow-sm">
+            <div class="card-body">
+                <h1 class="display-4 text-primary">{{ total_students }}</h1>
+                <p class="lead">Total Students</p>
+                <i class="bi bi-people-fill text-primary" style="font-size: 2rem;"></i>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('manage_students') }}" class="btn btn-sm btn-primary">Manage</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-center h-100 shadow-sm">
+            <div class="card-body">
+                <h1 class="display-4 text-success">{{ total_teachers }}</h1>
+                <p class="lead">Total Teachers</p>
+                <i class="bi bi-person-workspace text-success" style="font-size: 2rem;"></i>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('manage_teachers') }}" class="btn btn-sm btn-success">Manage</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-center h-100 shadow-sm">
+            <div class="card-body">
+                <h1 class="display-4 text-info">{{ total_attendance }}</h1>
+                <p class="lead">Attendance Records</p>
+                <i class="bi bi-clipboard-check text-info" style="font-size: 2rem;"></i>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('admin_reports') }}" class="btn btn-sm btn-info text-white">View Reports</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Quick Actions</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="d-grid">
+                            <a href="{{ url_for('admin_mark_attendance') }}" class="btn btn-lg btn-outline-primary">
+                                <i class="bi bi-calendar-check me-2"></i> Mark Attendance
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="d-grid">
+                            <a href="{{ url_for('admin_reports') }}" class="btn btn-lg btn-outline-success">
+                                <i class="bi bi-bar-chart me-2"></i> View Reports
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="d-grid">
+                            <a href="{{ url_for('manage_students') }}" class="btn btn-lg btn-outline-info">
+                                <i class="bi bi-person-plus me-2"></i> Add Student
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="d-grid">
+                            <a href="{{ url_for('manage_teachers') }}" class="btn btn-lg btn-outline-secondary">
+                                <i class="bi bi-person-badge me-2"></i> Add Teacher
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Navigation Menu -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">Student Management</h4>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{{ url_for('manage_students') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-people me-2"></i> 
+                            View All Students
+                        </div>
+                        <span class="badge bg-primary rounded-pill">{{ total_students }}</span>
+                    </a>
+                    <a href="{{ url_for('admin_mark_attendance') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-calendar-check me-2"></i> Mark Student Attendance
+                    </a>
+                    <a href="{{ url_for('admin_reports') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-file-earmark-text me-2"></i> Student Attendance Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Teacher Management</h4>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    <a href="{{ url_for('manage_teachers') }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-person-workspace me-2"></i> 
+                            View All Teachers
+                        </div>
+                        <span class="badge bg-success rounded-pill">{{ total_teachers }}</span>
+                    </a>
+                    <a href="{{ url_for('manage_teachers') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-person-plus me-2"></i> Add New Teacher
+                    </a>
+                    <a href="{{ url_for('admin_reports') }}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-graph-up me-2"></i> Teacher-wise Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

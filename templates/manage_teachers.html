@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Teachers - Smart Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Manage Teachers</h1>
+        <p class="lead">Add, edit, or remove teachers from the system</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Add New Teacher</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                        <div class="form-text">Choose a unique username for login</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Add Teacher</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Teacher List</h4>
+                <span class="badge bg-light text-dark">Total: {{ teachers|length }}</span>
+            </div>
+            <div class="card-body">
+                {% if teachers %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Subject</th>
+                                <th>Username</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for teacher in teachers %}
+                            <tr>
+                                <td>{{ teacher.id }}</td>
+                                <td>{{ teacher.name }}</td>
+                                <td>{{ teacher.subject }}</td>
+                                <td>{{ teacher.username }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-primary edit-teacher-btn" 
+                                                data-teacher-id="{{ teacher.id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger delete-teacher-btn"
+                                                data-teacher-id="{{ teacher.id }}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> No teachers found in the system. Add your first teacher using the form on the left.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Place modals outside the main content to prevent positioning issues -->
+{% for teacher in teachers %}
+<!-- Edit Modal -->
+<div class="modal edit-teacher-modal" id="editTeacherModal{{ teacher.id }}" tabindex="-1" aria-labelledby="editTeacherModalLabel{{ teacher.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Edit Teacher</h5>
+                <button type="button" class="btn-close btn-close-white close-modal-btn" data-modal-id="editTeacherModal{{ teacher.id }}"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('edit_teacher', teacher_id=teacher.id) }}" method="post">
+                    <div class="mb-3">
+                        <label for="edit_name{{ teacher.id }}" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="edit_name{{ teacher.id }}" 
+                               name="name" value="{{ teacher.name }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_username{{ teacher.id }}" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="edit_username{{ teacher.id }}" 
+                               name="username" value="{{ teacher.username }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_subject{{ teacher.id }}" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="edit_subject{{ teacher.id }}" 
+                               name="subject" value="{{ teacher.subject }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_password{{ teacher.id }}" class="form-label">New Password (leave blank to keep current)</label>
+                        <input type="password" class="form-control" id="edit_password{{ teacher.id }}" name="password">
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Update Teacher</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal-btn" data-modal-id="editTeacherModal{{ teacher.id }}">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal delete-teacher-modal" id="deleteTeacherModal{{ teacher.id }}" tabindex="-1" aria-labelledby="deleteTeacherModalLabel{{ teacher.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white close-modal-btn" data-modal-id="deleteTeacherModal{{ teacher.id }}"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete teacher <strong>{{ teacher.name }}</strong>?</p>
+                <p class="text-danger">This action cannot be undone and will also delete all attendance records by this teacher.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-modal-btn" data-modal-id="deleteTeacherModal{{ teacher.id }}">Cancel</button>
+                <form action="{{ url_for('delete_teacher', teacher_id=teacher.id) }}" method="post">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Custom code to handle modals properly
+        
+        // Close modal handler - universal for all close buttons
+        document.querySelectorAll('.close-modal-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const modalId = this.getAttribute('data-modal-id');
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    // Hide the modal
+                    modal.style.display = 'none';
+                    modal.classList.remove('show');
+                    // Remove modal-open class and backdrop
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = 'auto';
+                    document.body.style.paddingRight = '0';
+                    // Remove any modal backdrops
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(function(backdrop) {
+                        backdrop.parentNode.removeChild(backdrop);
+                    });
+                }
+            });
+        });
+        
+        // Edit teacher button handler
+        document.querySelectorAll('.edit-teacher-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Remove any existing modal backdrops and modal-open class
+                document.body.classList.remove('modal-open');
+                const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+                existingBackdrops.forEach(function(backdrop) {
+                    backdrop.parentNode.removeChild(backdrop);
+                });
+                
+                // Hide any visible modals first
+                document.querySelectorAll('.modal').forEach(function(modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('show');
+                });
+                
+                // Get the teacher ID and show the correct modal
+                const teacherId = this.getAttribute('data-teacher-id');
+                const modal = document.getElementById('editTeacherModal' + teacherId);
+                
+                if (modal) {
+                    // Add backdrop
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    document.body.appendChild(backdrop);
+                    
+                    // Show the modal
+                    modal.style.display = 'block';
+                    modal.classList.add('show');
+                    document.body.classList.add('modal-open');
+                    document.body.style.overflow = 'hidden';
+                    document.body.style.paddingRight = '17px';
+
+                    // Add click event to close modal when clicking outside
+                    modal.addEventListener('click', function(event) {
+                        if (event.target === modal) {
+                            // Close the modal if clicked outside the modal content
+                            modal.style.display = 'none';
+                            modal.classList.remove('show');
+                            document.body.classList.remove('modal-open');
+                            document.body.style.overflow = 'auto';
+                            document.body.style.paddingRight = '0';
+                            
+                            // Remove backdrop
+                            const backdrops = document.querySelectorAll('.modal-backdrop');
+                            backdrops.forEach(function(backdrop) {
+                                backdrop.parentNode.removeChild(backdrop);
+                            });
+                        }
+                    });
+
+                    // Add escape key event to close modal
+                    document.addEventListener('keydown', function(event) {
+                        if (event.key === 'Escape') {
+                            modal.style.display = 'none';
+                            modal.classList.remove('show');
+                            document.body.classList.remove('modal-open');
+                            document.body.style.overflow = 'auto';
+                            document.body.style.paddingRight = '0';
+                            
+                            // Remove backdrop
+                            const backdrops = document.querySelectorAll('.modal-backdrop');
+                            backdrops.forEach(function(backdrop) {
+                                backdrop.parentNode.removeChild(backdrop);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        
+        // Delete teacher button handler
+        document.querySelectorAll('.delete-teacher-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Remove any existing modal backdrops and modal-open class
+                document.body.classList.remove('modal-open');
+                const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+                existingBackdrops.forEach(function(backdrop) {
+                    backdrop.parentNode.removeChild(backdrop);
+                });
+                
+                // Hide any visible modals first
+                document.querySelectorAll('.modal').forEach(function(modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('show');
+                });
+                
+                // Get the teacher ID and show the correct modal
+                const teacherId = this.getAttribute('data-teacher-id');
+                const modal = document.getElementById('deleteTeacherModal' + teacherId);
+                
+                if (modal) {
+                    // Add backdrop
+                    const backdrop = document.createElement('div');
+                    backdrop.className = 'modal-backdrop fade show';
+                    document.body.appendChild(backdrop);
+                    
+                    // Show the modal
+                    modal.style.display = 'block';
+                    modal.classList.add('show');
+                    document.body.classList.add('modal-open');
+                    document.body.style.overflow = 'hidden';
+                    document.body.style.paddingRight = '17px';
+
+                    // Add click event to close modal when clicking outside
+                    modal.addEventListener('click', function(event) {
+                        if (event.target === modal) {
+                            // Close the modal if clicked outside the modal content
+                            modal.style.display = 'none';
+                            modal.classList.remove('show');
+                            document.body.classList.remove('modal-open');
+                            document.body.style.overflow = 'auto';
+                            document.body.style.paddingRight = '0';
+                            
+                            // Remove backdrop
+                            const backdrops = document.querySelectorAll('.modal-backdrop');
+                            backdrops.forEach(function(backdrop) {
+                                backdrop.parentNode.removeChild(backdrop);
+                            });
+                        }
+                    });
+
+                    // Add escape key event to close modal
+                    document.addEventListener('keydown', function(event) {
+                        if (event.key === 'Escape') {
+                            modal.style.display = 'none';
+                            modal.classList.remove('show');
+                            document.body.classList.remove('modal-open');
+                            document.body.style.overflow = 'auto';
+                            document.body.style.paddingRight = '0';
+                            
+                            // Remove backdrop
+                            const backdrops = document.querySelectorAll('.modal-backdrop');
+                            backdrops.forEach(function(backdrop) {
+                                backdrop.parentNode.removeChild(backdrop);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        // Initialize all close buttons
+        function initializeCloseButtons() {
+            document.querySelectorAll('.close-modal-btn').forEach(function(closeBtn) {
+                closeBtn.onclick = function() {
+                    const modalId = this.getAttribute('data-modal-id');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        // Hide the modal
+                        modal.style.display = 'none';
+                        modal.classList.remove('show');
+                        
+                        // Remove modal-open class and backdrop
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = 'auto';
+                        document.body.style.paddingRight = '0';
+                        
+                        // Remove any modal backdrops
+                        const backdrops = document.querySelectorAll('.modal-backdrop');
+                        backdrops.forEach(function(backdrop) {
+                            backdrop.parentNode.removeChild(backdrop);
+                        });
+                    }
+                };
+            });
+        }
+
+        // Run initialization
+        initializeCloseButtons();
+    });
+</script>
+{% endblock %} 

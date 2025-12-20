@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance Reports - Smart Attendance Management System{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Attendance Reports</h1>
+        <p class="lead">Subject: {{ subject }}</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Attendance Statistics</h4>
+            </div>
+            <div class="card-body">
+                {% if student_stats and student_stats|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Total Classes</th>
+                                <th>Attendance %</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in student_stats %}
+                            <tr>
+                                <td>{{ stat.name }}</td>
+                                <td>{{ stat.total_classes }}</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar {% if stat.attendance_percent < 75 %}bg-danger{% elif stat.attendance_percent < 85 %}bg-warning{% else %}bg-success{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ stat.attendance_percent }}%;" 
+                                             aria-valuenow="{{ stat.attendance_percent }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            {{ stat.attendance_percent }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if stat.attendance_percent < 75 %}
+                                        <span class="badge bg-danger">Poor</span>
+                                    {% elif stat.attendance_percent < 85 %}
+                                        <span class="badge bg-warning text-dark">Average</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Good</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> No attendance data available. Please mark attendance for students first.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Top Performers</h4>
+            </div>
+            <div class="card-body">
+                {% if student_stats and student_stats|length > 0 %}
+                    {% set top_performers = [] %}
+                    {% for stat in student_stats %}
+                        {% if stat.attendance_percent >= 85 %}
+                            {% set _ = top_performers.append(stat) %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if top_performers|length > 0 %}
+                        <div class="list-group">
+                            {% set sorted_stats = top_performers|sort(attribute='attendance_percent', reverse=true) %}
+                            {% set display_count = [3, top_performers|length]|min %}
+                            {% for i in range(0, display_count) %}
+                                {% set stat = sorted_stats[i] %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">{{ stat.name }}</h5>
+                                        <p class="mb-1 text-muted">Total Classes: {{ stat.total_classes }}</p>
+                                    </div>
+                                    <span class="badge bg-success rounded-pill">{{ stat.attendance_percent }}%</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i> No students have achieved 85% or higher attendance yet.
+                        </div>
+                    {% endif %}
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> No student data available.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Needs Improvement</h4>
+            </div>
+            <div class="card-body">
+                {% if student_stats and student_stats|length > 0 %}
+                    {% set poor_performers = [] %}
+                    {% for stat in student_stats %}
+                        {% if stat.attendance_percent < 75 %}
+                            {% set _ = poor_performers.append(stat) %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if poor_performers|length > 0 %}
+                        <div class="list-group">
+                            {% set sorted_stats = poor_performers|sort(attribute='attendance_percent') %}
+                            {% set display_count = [3, poor_performers|length]|min %}
+                            {% for i in range(0, display_count) %}
+                                {% set stat = sorted_stats[i] %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">{{ stat.name }}</h5>
+                                        <p class="mb-1 text-muted">Total Classes: {{ stat.total_classes }}</p>
+                                    </div>
+                                    <span class="badge bg-danger rounded-pill">{{ stat.attendance_percent }}%</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle me-2"></i> Great job! All students have attendance above 75%.
+                        </div>
+                    {% endif %}
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i> No student data available.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Actions</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="d-grid">
+                            <button class="btn btn-outline-primary" onclick="window.print()">
+                                <i class="bi bi-printer me-2"></i> Print Report
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-grid">
+                            <button class="btn btn-outline-success" onclick="exportToCSV()">
+                                <i class="bi bi-file-earmark-excel me-2"></i> Export to CSV
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-grid">
+                            <a href="{{ url_for('teacher_mark_attendance') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-calendar-check me-2"></i> Mark Attendance
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function exportToCSV() {
+        // This would be implemented with a proper export endpoint in a real application
+        alert("CSV export functionality would be implemented in a production environment.");
+    }
+</script>
+{% endblock %} 

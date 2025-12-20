@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Smart Attendance Management System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row align-items-center py-5">
+    <div class="col-md-6">
+        <h1 class="display-4 fw-bold">Smart Attendance Management System</h1>
+        <p class="lead my-4">Track attendance efficiently for teachers and students. A modern solution for educational institutions to manage and monitor attendance seamlessly.</p>
+        <div class="d-grid gap-2 d-md-flex">
+            <a href="{{ url_for('login') }}?role=admin" class="btn btn-primary px-4">Login as Admin</a>
+            <a href="{{ url_for('login') }}?role=teacher" class="btn btn-outline-primary px-4">Login as Teacher</a>
+            <a href="{{ url_for('login') }}?role=student" class="btn btn-outline-secondary px-4">Login as Student</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <img src="{{ url_for('static', filename='images/hero.svg') }}" alt="Attendance System" class="img-fluid">
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-5 pt-5">
+    <h2 class="text-center mb-4">Key Features</h2>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-check-circle-fill text-success display-4 mb-3"></i>
+                <h5 class="card-title">Real-time Attendance Tracking</h5>
+                <p class="card-text">Mark and track attendance in real-time with an easy-to-use interface.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-bar-chart-fill text-primary display-4 mb-3"></i>
+                <h5 class="card-title">Automated Reports</h5>
+                <p class="card-text">Generate attendance reports and analytics with just a few clicks.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-people-fill text-info display-4 mb-3"></i>
+                <h5 class="card-title">Role-based Access</h5>
+                <p class="card-text">Separate interfaces for administrators, teachers, and students.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-laptop-fill text-warning display-4 mb-3"></i>
+                <h5 class="card-title">Simple Dashboard</h5>
+                <p class="card-text">Intuitive dashboard interface for easy navigation and management.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Project -->
+<div class="row mt-5">
+    <div class="col-12 text-center">
+        <h2>About This Project</h2>
+        <p class="lead">
+            This web-based attendance system was developed as a final year capstone project to digitize and 
+            streamline attendance tracking in educational institutions.
+        </p>
+        <a href="{{ url_for('about') }}" class="btn btn-outline-dark mt-3">Learn More</a>
+    </div>
+</div>
+{% endblock %} 
