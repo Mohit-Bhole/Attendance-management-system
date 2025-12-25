@@ -117,11 +117,12 @@ attendance-system/
 ```
 ---
 
-**BUILT BY - MOHIT BHOLE**
+**BUILT BY - MOHIT BHOLE for the team**
 
 ---
 ## License
 
 This project is created as a capstone project for educational purposes. 
+
 
 
